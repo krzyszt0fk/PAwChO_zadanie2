@@ -39,8 +39,25 @@ Tag typu commit SHA to unikalny identyfikator na podstawie pełnego hash commita
           ignore-unfixed: true          
           exit-code: 1 
 ```
+W efekcie końcowym, jeżeli wszystko przeszło pomyślnie, w GitHub Container Registry pojawi się obraz ghcr.io/krzyszt0fk/pawcho_zadanie2 oznaczony:
+- tagiem unikatowym sha-<skrót> – zawsze dla identyfikacji konkretnego buildu
+- tagiem wersji, jeśli pipeline był wywołany przez utworzenie takiego tagu w repo
 
-### 2. Tworzenie tokenów i repozytorów
+Tag SHA gwarantuje niezmienność i pełną odtwarzalność builda. Semver jest czytelny dla użytkownika, dlatego oba podjeścia zostały złączone.
+
+Jeśli skan znalazł krytyczne podatności, kroki push wersji w ogóle się nie wykonają tym samym żaden obraz nie zostanie opublikowany z nowym tagiem.
+```shell
+       - name: Push version tag to GHCR
+        if: ${{ startsWith(github.ref, 'refs/tags/v') && success() }}
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          echo "Tagging image with version $VERSION"
+          docker pull ghcr.io/krzyszt0fk/pawcho_zadanie2:sha-${GITHUB_SHA}
+          docker tag ghcr.io/krzyszt0fk/pawcho_zadanie2:sha-${GITHUB_SHA} ghcr.io/krzyszt0fk/pawcho_zadanie2:${VERSION}
+          docker push ghcr.io/krzyszt0fk/pawcho_zadanie2:${VERSION}
+```
+
+### 2. Tworzenie tokenów 
 Aby powyższy workflow działał został przygotowany:
 - GHCR_TOKEN
 - DOCKERHUB_TOKEN
