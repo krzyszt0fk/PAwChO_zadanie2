@@ -44,7 +44,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           #tagujemy obraz commitem (sha) - unikalny identyfikator builda
-          tags: ghcr.io/krzyszt0fk/PAwChO_zadanie2:sha-${{ github.sha }}
+          tags: ghcr.io/krzyszt0fk/pawcho_zadanie2:sha-${{ github.sha }}
           # Użycie cache z DockerHub
           cache-from: type=registry,ref=krzyszt0fk/pawcho_zadanie2_cache:buildcache
           cache-to: type=registry,ref=krzyszt0fk/pawcho_zadanie2_cache:buildcache,mode=max
@@ -53,7 +53,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.30.0
         with:
           scan-type: image
-          image-ref: ghcr.io/krzyszt0fk/PAwChO_zadanie2:sha-${{ github.sha }}
+          image-ref: ghcr.io/krzyszt0fk/pawcho_zadanie2:sha-${{ github.sha }}
           format: table
           severity: CRITICAL,HIGH        # skanuj tylko pod kątem High/Critical
           ignore-unfixed: true          # pomiń CVE bez dostępnych fixów
@@ -64,6 +64,6 @@ jobs:
         run: |
           VERSION=${GITHUB_REF#refs/tags/}
           echo "Tagging image with version $VERSION"
-          docker pull ghcr.io/krzyszt0fk/PAwChO_zadanie2:sha-${GITHUB_SHA}
-          docker tag ghcr.io/krzyszt0fk/PAwChO_zadanie2:sha-${GITHUB_SHA} ghcr.io/krzyszt0fk/PAwChO_zadanie2:${VERSION}
-          docker push ghcr.io/krzyszt0fk/PAwChO_zadanie2:${VERSION}
+          docker pull ghcr.io/krzyszt0fk/pawcho_zadanie2:sha-${GITHUB_SHA}
+          docker tag ghcr.io/krzyszt0fk/pawcho_zadanie2:sha-${GITHUB_SHA} ghcr.io/krzyszt0fk/pawcho_zadanie2:${VERSION}
+          docker push ghcr.io/krzyszt0fk/pawcho_zadanie2:${VERSION}
